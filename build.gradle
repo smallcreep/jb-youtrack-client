@@ -1,0 +1,80 @@
+group 'com.github.smallcreep'
+version(project.hasProperty('Ver') ? project.property('Ver') : '1.0-SNAPSHOT')
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        jcenter()
+    }
+    dependencies {
+        classpath "com.gradle:build-scan-plugin:1.8"
+    }
+}
+
+apply from: rootProject.file('gradle/basic.gradle')
+
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    def buildVersion = project.hasProperty('number') ? project.property('number') : '1.0-SNAPSHOT'
+    manifest {
+        attributes 'Youtrack-Version': version,
+                'Youtrack-Build': buildVersion,
+                'Youtrack-Date': new Date()
+    }
+}
+
+project.ext {
+    junitVersion = "4.12"
+}
+
+dependencies {
+    testCompile "junit:junit:$junitVersion"
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.project {
+                packaging 'jar'
+                name 'JB YouTrack Client'
+                description 'Fluent Api client for JetBrains YouTrack'
+                url 'https://github.com/smallcreep/jb-youtrack-client'
+                inceptionYear '2017'
+                licenses {
+                    license {
+                        name 'MIT'
+                        url 'https://raw.githubusercontent.com/smallcreep/jb-youtrack-client/master/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id '1'
+                        name 'Ilia Rogozhin'
+                        email 'ilia.rogozhin@gmail.com'
+                        roles {
+                            role 'Architect'
+                            role 'Developer'
+                        }
+                        timezone '+3'
+                    }
+                }
+                issueManagement {
+                    system 'GitHub'
+                    url 'https://github.com/smallcreep/jb-youtrack-client/issues'
+                }
+                scm {
+                    connection 'scm:git:git@github.com:smallcreep/jb-youtrack-client.git'
+                    developerConnection 'scm:git:git@github.com:smallcreep/jb-youtrack-client.git'
+                    url 'https://github.com/smallcreep/jb-youtrack-client'
+                }
+            }
+        }
+    }
+}
